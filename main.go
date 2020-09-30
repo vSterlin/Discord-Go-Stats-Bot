@@ -35,7 +35,10 @@ func getStats(s string) string {
 
 	byteValue := []byte(s)
 	arr := []float64{}
-	json.Unmarshal(byteValue, &arr)
+	err := json.Unmarshal(byteValue, &arr)
+	if err != nil {
+		return "Please enter valid input"
+	}
 	sort.Float64s(arr)
 
 	v, _ := stats.Variance(arr)
@@ -68,7 +71,7 @@ func sendMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 	if strings.HasPrefix(m.Content, "vstats") {
-		s.ChannelMessageDelete(m.ChannelID, m.ID)
+		// s.ChannelMessageDelete(m.ChannelID, m.ID)
 		s.ChannelMessageSend(m.ChannelID, getStats(m.Content[7:]))
 	}
 }
